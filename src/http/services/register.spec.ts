@@ -1,16 +1,21 @@
 import { compare } from 'bcrypt'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, beforeEach } from 'vitest'
 
 import { InMemoryUsersRepository } from '~/repositories/in-memory/users-repository'
 import { UserAlreadyExistsException } from './errors/user-already-exists'
 import { RegisterService } from './register.service'
 
-describe('Register Service', () => {
-  it('should be able to register an user', async () => {
-    const repository = new InMemoryUsersRepository()
-    const registerService = new RegisterService(repository)
+let repository: InMemoryUsersRepository
+let sut: RegisterService
 
-    const { user } = await registerService.execute({
+describe('Register Service', () => {
+  beforeEach(() => {
+    repository = new InMemoryUsersRepository()
+    sut = new RegisterService(repository)
+  })
+
+  it('should be able to register an user', async () => {
+    const { user } = await sut.execute({
       name: 'John Doe',
       email: 'johndoe@email.com',
       password: '123456',
@@ -20,10 +25,7 @@ describe('Register Service', () => {
   })
 
   it('should hash user password upon registration', async () => {
-    const repository = new InMemoryUsersRepository()
-    const registerService = new RegisterService(repository)
-
-    const { user } = await registerService.execute({
+    const { user } = await sut.execute({
       name: 'John Doe',
       email: 'johndoe@email.com',
       password: '123456',
@@ -35,18 +37,15 @@ describe('Register Service', () => {
   })
 
   it('should not be able to register with same email twice', async () => {
-    const repository = new InMemoryUsersRepository()
-    const registerService = new RegisterService(repository)
-
     const email = 'johndoe@email.com'
 
-    await registerService.execute({
+    await sut.execute({
       name: 'John Doe',
       email,
       password: '123456',
     })
 
-    await expect(() => registerService.execute({
+    await expect(() => sut.execute({
       name: 'John Doe',
       email,
       password: '123456',
