@@ -1,8 +1,8 @@
 import { hash } from 'bcrypt'
 import { expect, describe, it, beforeEach } from 'vitest'
 import { InMemoryUsersRepository } from '~/repositories/in-memory/users-repository'
-import { AuthenticateService } from './authenticate.service'
-import { InvalidCredentialsException } from './errors/invalid-credentials-error'
+import { AuthenticateService } from '../authenticate.service'
+import { InvalidCredentialsException } from '../errors'
 
 
 let usersRepository: InMemoryUsersRepository
@@ -38,14 +38,14 @@ describe('Authenticate Use Case', () => {
     ).rejects.toBeInstanceOf(InvalidCredentialsException)
   })
 
-  it('should not be able to authenticate with wrong email', async () => {
+  it('should not be able to authenticate with wrong password', async () => {
     await usersRepository.create({
       name: 'John Doe',
       email: 'johndoe@example.com',
       passwordHash: await hash('123456', 6),
     })
 
-    expect(() =>
+    await expect(() =>
       sut.execute({
         email: 'johndoe@example.com',
         password: '123123',

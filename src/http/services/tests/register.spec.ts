@@ -2,8 +2,8 @@ import { compare } from 'bcrypt'
 import { describe, expect, it, beforeEach } from 'vitest'
 
 import { InMemoryUsersRepository } from '~/repositories/in-memory/users-repository'
-import { UserAlreadyExistsException } from './errors/user-already-exists'
-import { RegisterService } from './register.service'
+import { UserAlreadyExistsException } from '../errors'
+import { RegisterService } from '../register.service'
 
 let repository: InMemoryUsersRepository
 let sut: RegisterService
