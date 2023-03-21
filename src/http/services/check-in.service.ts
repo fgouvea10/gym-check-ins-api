@@ -3,9 +3,11 @@ import type { CheckIn } from '@prisma/client'
 import { CheckInsRepository } from '~/repositories/interfaces/check-ins-repository'
 import { GymsRepository } from '~/repositories/interfaces/gyms-repository'
 import { getDistanceBetweenCoordinates } from '~/utils/get-distance-between-coordinates'
-import { ResourceNotExistsException } from './errors'
-import { MaxDistanceException } from './errors/max-distance-error'
-import { MaxNumberOfCheckInsException } from './errors/max-number-of-check-ins-error'
+import {
+  ResourceNotExistsException,
+  MaxNumberOfCheckInsException,
+  MaxDistanceException,
+} from './errors'
 
 interface CheckInServiceRequest {
   userId: string;
