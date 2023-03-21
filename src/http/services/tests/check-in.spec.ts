@@ -4,24 +4,26 @@ import { describe, beforeEach, expect, it, vi, afterEach } from 'vitest'
 import { InMemoryCheckInsRepository } from '~/repositories/in-memory/check-ins-repository'
 import { InMemoryGymsRepository } from '~/repositories/in-memory/in-memory-gyms-repository'
 import { CheckInService } from '../check-in.service'
+import { MaxDistanceException } from '../errors/max-distance-error'
+import { MaxNumberOfCheckInsException } from '../errors/max-number-of-check-ins-error'
 
 let checkInRepository: InMemoryCheckInsRepository
 let gymsRepository: InMemoryGymsRepository
 let sut: CheckInService
 
 describe('Check-in Service', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     checkInRepository = new InMemoryCheckInsRepository()
     gymsRepository = new InMemoryGymsRepository()
     sut = new CheckInService(checkInRepository, gymsRepository)
 
-    gymsRepository.gyms.push({
+    await gymsRepository.create({
       id: 'gym-01',
       title: 'Gym Sample Name Example',
       description: '',
       phone: '',
-      latitude: new Decimal( -22.8418808),
-      longitude: new Decimal(-43.3404514),
+      latitude:  -22.8418808,
+      longitude: -43.3404514,
     })
 
     vi.useFakeTimers()
@@ -57,7 +59,7 @@ describe('Check-in Service', () => {
       userId: 'user-01',
       userLatitude: -22.8418808,
       userLongitude: -43.3404514
-    })).rejects.toBeInstanceOf(Error)
+    })).rejects.toBeInstanceOf(MaxNumberOfCheckInsException)
   })
 
   it('should be able to check in twice but in different days', async () => {
@@ -97,6 +99,6 @@ describe('Check-in Service', () => {
       userId: 'user-01',
       userLatitude: -22.8418808,
       userLongitude: -43.3404514
-    })).rejects.toBeInstanceOf(Error)
+    })).rejects.toBeInstanceOf(MaxDistanceException)
   })
 })
