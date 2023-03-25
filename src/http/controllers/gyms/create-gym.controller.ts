@@ -3,7 +3,7 @@ import { FastifyRequest, FastifyReply } from 'fastify'
 
 import { makeCreateGymService } from '~/http/services/factories/make-create-gym.service'
 
-export async function create(request: FastifyRequest, reply: FastifyReply) {
+export async function createGym(request: FastifyRequest, reply: FastifyReply) {
   const createGymBodySchema = z.object({
     title: z.string(),
     description: z.string().nullable(),
@@ -19,9 +19,9 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
   const { title, description, phone, latitude, longitude } =
     createGymBodySchema.parse(request.body)
 
-  const registerService = makeCreateGymService()
+  const createGymService = makeCreateGymService()
 
-  await registerService.execute({
+  await createGymService.execute({
     title,
     description,
     phone,
