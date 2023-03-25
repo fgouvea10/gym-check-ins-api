@@ -4,7 +4,7 @@ import request from 'supertest'
 import { app } from '~/app'
 import { createAndAuthenticateUser } from '~/utils/test/create-and-authenticate-user'
 
-describe('Search Gyms (e2e)', () => {
+describe('Nearby Gyms (e2e)', () => {
   beforeAll(async () => {
     await app.ready()
   })
@@ -13,7 +13,7 @@ describe('Search Gyms (e2e)', () => {
     await app.close()
   })
 
-  it('should be able to search gyms by title', async () => {
+  it('should be able to list nearby gyms', async () => {
     const { token } = await createAndAuthenticateUser(app)
 
     await request(app.server)
@@ -34,13 +34,13 @@ describe('Search Gyms (e2e)', () => {
         title: 'Gym Example 02',
         description: 'Nice description for e2e testing',
         phone: '555000555',
-        latitude: -22.8418808,
-        longitude: -43.3404514,
+        latitude: 12.9765381,
+        longitude: -38.4815099,
       })
 
     const response = await request(app.server)
-      .get('/gyms/search')
-      .query({ query: '01' })
+      .get('/gyms/nearby')
+      .query({ latitude: -22.8418808, longitude: -43.3404514 })
       .set('Authorization', `Bearer ${token}`)
       .send()
 
