@@ -5,7 +5,7 @@ import { app } from '~/app'
 import { createAndAuthenticateUser } from '~/utils/test/create-and-authenticate-user'
 import { prisma } from '~/lib/prisma'
 
-describe('Check-in History (e2e)', () => {
+describe('Check-in Metrics (e2e)', () => {
   beforeAll(async () => {
     await app.ready()
   })
@@ -14,7 +14,7 @@ describe('Check-in History (e2e)', () => {
     await app.close()
   })
 
-  it('should be able to list the history of check-ins', async () => {
+  it('should be able get the total count of check-ins', async () => {
     const { token } = await createAndAuthenticateUser(app, true)
 
     const user = await prisma.user.findFirstOrThrow()
@@ -41,20 +41,11 @@ describe('Check-in History (e2e)', () => {
     })
 
     const response = await request(app.server)
-      .get('/check-ins/history')
+      .get('/check-ins/metrics')
       .set('Authorization', `Bearer ${token}`)
       .send()
 
     expect(response.statusCode).toEqual(200)
-    expect(response.body.checkIns).toEqual([
-      expect.objectContaining({
-        gymId: gym.id,
-        userId: user.id,
-      }),
-      expect.objectContaining({
-        gymId: gym.id,
-        userId: user.id,
-      })
-    ])
+    expect(response.body.checkInsCount).toEqual(2)
   })
 })
